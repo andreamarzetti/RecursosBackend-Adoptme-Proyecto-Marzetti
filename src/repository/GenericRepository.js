@@ -1,4 +1,3 @@
-
 export default class GenericRepository {
     constructor(dao) {
         this.dao = dao;
@@ -10,6 +9,10 @@ export default class GenericRepository {
 
     getBy = (params) =>{
         return this.dao.getBy(params);
+    }
+
+    getById = (id) => {
+        return this.dao.getById(id);
     }
 
     create = (doc) =>{

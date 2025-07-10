@@ -1,17 +1,23 @@
+
 import express from 'express';
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
 
 import usersRouter from './routes/users.router.js';
 import petsRouter from './routes/pets.router.js';
-import adoptionsRouter from './routes/adoption.router.js';
+import adoptionsRouter from './routes/adoptions.router.js';  
 import sessionsRouter from './routes/sessions.router.js';
 import mocksRouter from './routes/mocks.router.js';
+
+import swaggerUi from 'swagger-ui-express';
+import YAML from 'yamljs';
 
 const app = express(); 
 const PORT = process.env.PORT || 8080;
 
-// Conexión a MongoDB
+const swaggerDocument = YAML.load('src/docs/users.yaml');
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 const MONGO_USER = "amarzetti";
 const MONGO_PASS = "oR7qCVDNcvOmQGqe";
 const DB_NAME = "adoptme"; 
@@ -25,16 +31,19 @@ mongoose.connect(MONGO_URI, {
 .then(() => console.log('MongoDB connected'))
 .catch(err => console.error('MongoDB connection error:', err));
 
-// Middlewares
 app.use(express.json());
 app.use(cookieParser());
 
-// Routers
 app.use('/api/users', usersRouter);
 app.use('/api/pets', petsRouter);
 app.use('/api/adoptions', adoptionsRouter);
 app.use('/api/sessions', sessionsRouter);
 app.use('/api/mocks', mocksRouter);
 
-// Arranque del servidor
+app.get('/', (req, res) => {
+  res.send('API AdoptMe funcionando correctamente');
+});
+
 app.listen(PORT, () => console.log(`Listening on ${PORT}`));
+
+export default app;

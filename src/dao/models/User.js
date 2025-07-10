@@ -1,42 +1,19 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-const collection = 'Users';
+const documentSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  reference: { type: String, required: true }
+}, { _id: false });
 
-const schema = new mongoose.Schema({
-    first_name:{
-        type: String,
-        required:true
-    },
-    last_name:{
-        type:String,
-        required:true
-    },
-    email:{
-        type:String,
-        required:true,
-        unique:true
-    },
-    password:{
-        type:String,
-        required:true
-    },
-    role: {
-        type:String,
-        default:'user'
-    },
-    pets:{
-        type:[
-            {
-                _id:{
-                    type:mongoose.SchemaTypes.ObjectId,
-                    ref:'Pets'
-                }
-            }
-        ],
-        default:[]
-    }
-})
+const userSchema = new mongoose.Schema({
+  first_name: String,
+  last_name: String,
+  email: { type: String, unique: true },
+  password: String,
+  role: { type: String, default: "user" },
+  pets: [{ type: mongoose.Schema.Types.ObjectId, ref: "Pet" }],
+  documents: [documentSchema], // <--- NUEVO
+  last_connection: { type: Date } // <--- NUEVO
+});
 
-const userModel = mongoose.model(collection,schema);
-
-export default userModel;
+export default mongoose.model("User", userSchema);

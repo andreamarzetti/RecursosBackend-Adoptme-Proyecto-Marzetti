@@ -7,7 +7,8 @@ const router = Router();
 
 // GET /api/mocks/mockingpets
 router.get('/mockingpets', (req, res) => {
-  const pets = generateMockPets(50);
+  const count = parseInt(req.query.count) || 50;
+  const pets = generateMockPets(count);
   res.status(200).json({ status: 'success', pets });
 });
 

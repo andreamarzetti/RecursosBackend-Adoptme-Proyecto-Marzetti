@@ -1,19 +1,26 @@
 import mongoose from "mongoose";
 
-
 const collection = "Adoptions";
 
 const schema = new mongoose.Schema({
-    owner:{
-        type:mongoose.SchemaTypes.ObjectId,
-        ref:'Users'
+    owner: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Users',
+        required: true,
     },
-    pet:{
-        type:mongoose.SchemaTypes.ObjectId,
-        ref:'Pets'
+    pet: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Pets',
+        required: true,
+    },
+    date: {
+        type: Date,
+        default: Date.now,
     }
-})
+}, {
+    timestamps: true, // agrega createdAt y updatedAt automáticos
+});
 
-const adoptionModel = mongoose.model(collection,schema);
+const adoptionModel = mongoose.model(collection, schema);
 
 export default adoptionModel;
