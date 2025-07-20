@@ -1,23 +1,21 @@
-# Imagen base oficial de Node
-FROM node:18-alpine
-
-# Definir directorio de trabajo en el contenedor
+# Etapa 1: build de dependencias
+FROM node:18-alpine AS deps
 WORKDIR /app
-
-# Copiar solo package.json y package-lock.json
 COPY package*.json ./
-
-# Instalar dependencias
 RUN npm install --production
 
-# Copiar el resto de los archivos (excluyendo lo de .dockerignore)
+# Etapa 2: copiar código + ejecución
+FROM node:18-alpine
+WORKDIR /app
+
+COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Definir variable de entorno para la conexión a MongoDB
 ENV MONGODB_URI=mongodb://host.docker.internal:27017/adoptme
 
-# Exponer puerto que usa la app
-EXPOSE 8080
+LABEL maintainer="Andrea Marzetti" \
+      description="API para gestión de adopciones de mascotas" \
+      version="1.0"
 
-# Comando para arrancar la app
+EXPOSE 8080
 CMD ["npm", "start"]
